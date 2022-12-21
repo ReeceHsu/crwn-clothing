@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import FormInput from '../form-input/form-input.component';
-import Button from '../button/button.component';
+import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
 
 import { signInWithGooglePopup, signInAuthWithEmailAndPassword } from '../../utils/firebase/firebase.utils';
 
@@ -59,10 +59,10 @@ const SignInForm = () => {
 				<FormInput label='Email' type='email' required onChange={handleChange} name='email' value={email} />
 				<FormInput label='Password' type='password' required onChange={handleChange} name='password' value={password} />
 				<div className='buttons-container'>
-					<Button buttontype='singIn' type='submit'>
+					<Button buttontype={BUTTON_TYPE_CLASSES.base} type='submit'>
 						Sign In
 					</Button>
-					<Button buttontype='google' type='button' onClick={logGoogleUser}>
+					<Button buttontype={BUTTON_TYPE_CLASSES.google} type='button' onClick={logGoogleUser}>
 						Google SIGN IN
 					</Button>
 				</div>
