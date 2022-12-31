@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
 import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
 
-import { signInWithGooglePopup, signInAuthWithEmailAndPassword } from '../../utils/firebase/firebase.utils';
+import { googleSignInStart, emailSignInStart } from '../../store/user/user.action';
 
 import './sign-in-form.styles.scss';
 
@@ -12,6 +13,7 @@ const defaultFormFileds = {
 	password: '',
 };
 const SignInForm = () => {
+	const dispatch = useDispatch();
 	const [formFileds, setFormFields] = useState(defaultFormFileds);
 	const { email, password } = formFileds;
 
@@ -19,11 +21,15 @@ const SignInForm = () => {
 		setFormFields(defaultFormFileds);
 	};
 
+	const signInWithGoogle = async () => {
+		dispatch(googleSignInStart());
+	};
+
 	const handleSubmit = async event => {
 		event.preventDefault();
 
 		try {
-			await signInAuthWithEmailAndPassword(email, password);
+			dispatch(emailSignInStart(email, password));
 			resetFormFields();
 		} catch (error) {
 			switch (error.code) {
@@ -45,10 +51,6 @@ const SignInForm = () => {
 		setFormFields({ ...formFileds, [name]: value });
 	};
 
-	const logGoogleUser = async () => {
-		await signInWithGooglePopup();
-	};
-
 	return (
 		<div className='sign-up-container'>
 			<h2>Already have an account?</h2>
@@ -57,10 +59,10 @@ const SignInForm = () => {
 				<FormInput label='Email' type='email' required onChange={handleChange} name='email' value={email} />
 				<FormInput label='Password' type='password' required onChange={handleChange} name='password' value={password} />
 				<div className='buttons-container'>
-					<Button buttontype={BUTTON_TYPE_CLASSES.base} type='submit'>
+					<Button type='submit'>
 						Sign In
 					</Button>
-					<Button buttontype={BUTTON_TYPE_CLASSES.google} type='button' onClick={logGoogleUser}>
+					<Button buttontype={BUTTON_TYPE_CLASSES.google} type='button' onClick={signInWithGoogle}>
 						Google SIGN IN
 					</Button>
 				</div>
