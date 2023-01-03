@@ -7,8 +7,12 @@ import Spinner from '../../components/spinner/spinner.component';
 import { selectrCategoriesMap, selectCategoriesLoading } from '../../store/categories/categories.selector';
 import './category.styles.scss';
 
+type CategoryRouteParams = {
+	category: string
+}
+
 const Category = () => {
-	const { category } = useParams();
+	const { category } = useParams<keyof CategoryRouteParams>() as CategoryRouteParams;
 	const categoriesMap = useSelector(selectrCategoriesMap);
 	const isLoading = useSelector(selectCategoriesLoading);
 	const [products, setProducts] = useState(categoriesMap[category]);
