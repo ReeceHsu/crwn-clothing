@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
+import { AuthError, AuthErrorCodes } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
@@ -6,7 +7,7 @@ import Button from '../button/button.component';
 
 import { signUpStart } from '../../store/user/user.action';
 
-import './sign-up-form.styles.scss';
+import { SignUpContainer } from './sign-up-form.styles';
 
 const defaultFormFileds = {
 	displayName: '',
@@ -19,7 +20,7 @@ const SignUpForm = () => {
 	const { displayName, email, password, confirmPassword } = formFileds;
 	const dispatch = useDispatch();
 
-	const handleSubmit = async event => {
+	const handleSubmit = async (event: FormEvent<HTMLInputElement>) => {
 		event.preventDefault();
 
 		if (password !== confirmPassword) {
@@ -29,24 +30,24 @@ const SignUpForm = () => {
 		try {
 			dispatch(signUpStart(email, password, displayName));
 		} catch (error) {
-			if (error.code === 'auth/email-already-in-use') {
+			if ((error as AuthError).code === AuthErrorCodes.EMAIL_EXISTS) {
 				alert('Cannot create user, email already in use');
 			}
 			console.log('user creation encountered an error', error);
 		}
 	};
 
-	const handleChange = event => {
+	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 
 		setFormFields({ ...formFileds, [name]: value });
 	};
 
 	return (
-		<div className='sign-up-container'>
+		<SignUpContainer>
 			<h2>Don't have an account?</h2>
 			<span>Sign up with your email and password</span>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={e => handleSubmit}>
 				<FormInput
 					label='Display Name'
 					type='text'
@@ -67,7 +68,7 @@ const SignUpForm = () => {
 				/>
 				<Button type='submit'>Sign Up</Button>
 			</form>
-		</div>
+		</SignUpContainer>
 	);
 };
 
